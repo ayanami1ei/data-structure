@@ -685,45 +685,68 @@ stack<T> stack<T>::operator=(stack<T>& a)
 }
 
 
+
+
 int main()
 {
-	int n;
-	cin >> n;
+	string s;
+	cin >> s;
+	s = string(s.rbegin(), s.rend());
 
-	int sum = 0;
+	stack<char> orig;
+	stack<int> num;
+	//int an = 0;
 
-	for (int i = 0; i < n; ++i)
+	for (char c : s)
+		orig.push(c);
+	int temp = 0;
+	int rhs;
+	int lhs;
+	while (!orig.empty())
 	{
-		stack<char> st;
-		cin >> st;
-
-		stack<char> tmp;
-
-		while (!st.empty())
+		switch (orig.top())
 		{
-			try {
-				if (tmp.top() != st.top())
-				{
-					tmp.push(st.pop());
-				}
-				else
-				{
-					st.pop();
-					tmp.pop();
-				}
-			}
-			catch (runtime_error& e)
-			{
-				if (e.what() == "empty")
-					break;
-				tmp.push(st.pop());
-				continue;
-			}
-		}
+		case '+':
+			temp = num.pop();
+			temp += num.pop();
+			num.push(temp);
+			temp = 0;
+			orig.pop();
+			break;
+		case '-':
+			rhs = num.pop();
+			lhs = num.pop();
+			num.push(lhs - rhs);
+			orig.pop();
+			break;
 
-		if (tmp.empty())
-			++sum;
+		case '*':
+			temp = num.pop();
+			temp *= num.pop();
+			num.push(temp);
+			temp = 0;
+			orig.pop();
+			break;
+		case '/':
+			rhs = num.pop();
+			lhs = num.pop();
+			num.push(lhs / rhs);
+			orig.pop();
+			break;
+
+		case '.':
+			num.push(temp);
+			temp = 0;
+		case '@':
+			orig.pop();
+			continue;
+			break;
+
+		default:
+			temp = temp * 10 + orig.pop() - '0';
+			break;
+		}
 	}
 
-	cout << sum;
+	cout << num.pop() << endl;
 }
